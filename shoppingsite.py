@@ -63,6 +63,8 @@ def show_shopping_cart():
     
     # - get the cart dictionary from the session
     cart = session.get("cart", {})
+    print("*"*20)
+    print("show_shopping_cart print cart:", cart)
 
     # - create a list to hold melon objects and a variable to hold the total cost of the order
     melons_in_cart = []
@@ -73,7 +75,8 @@ def show_shopping_cart():
     #    - get the corresponding Melon object
         melon = melons.get_by_id(melon_id)
     #    - compute the total cost for that type of melon
-        cost_of_mel = melon.price * quantity
+        price = melon.price
+        cost_of_mel = price * quantity
     #    - add this to the order total
         total_cost += cost_of_mel
     #    - add quantity and total cost as attributes on the Melon object
@@ -81,11 +84,27 @@ def show_shopping_cart():
         melon.cost_of_mel = cost_of_mel
     #    - add the Melon object to the list created above
         melons_in_cart.append(melon)
+
     # - pass the total order cost and the list of Melon objects to the template
-
     # Make sure your function can also handle the case wherein no cart has been added to the session
-
     return render_template("cart.html", melons_in_cart=melons_in_cart, total_cost=total_cost)
+
+
+# WE'VE GONE ROGUE!!!!!!
+@app.route('/delete_item/<melon_id>')
+def delete_from_cart(melon_id):
+    """Delete melon / qty from cart and update cart"""
+
+    # get 'cart' dict from session
+    cart = session.get("cart", {})
+    # pop item
+    del cart[melon_id]
+    # update session
+    session['cart'] = cart 
+    # update / reload show_shopping_cart table
+    flash(f"Deleted from cart.")
+    
+    return redirect("/cart")
 
 
 @app.route("/add_to_cart/<melon_id>")
@@ -98,13 +117,14 @@ def add_to_cart(melon_id):
 
     # - check if a "cart" exists in the session, and create one (an empty dict keyed to the string "cart") if not
     cart = session["cart"] = session.get("cart", {})
-
+    print("*"*20)
+    print("Cart:", cart)
     # - check if the desired melon id is the cart, and if not, put it in
         # - increment the count for that melon id by 1
     cart[melon_id] = cart.get(melon_id, 0) + 1
-
     # - flash a success message
     flash("Added to cart!")
+
     # - redirect the user to the cart page
     return redirect("/cart")
 

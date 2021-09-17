@@ -15,19 +15,19 @@
         <tbody>
         <tr>
             {% for melon in melons_in_cart %}
-            <tr>
-                <td>{{ melon.melon_id }}</td>
+                <tr>
+                <td>{{ melon.common_name }}</td>
                 <td>{{ melon.quantity }}</td>
-                <td>{{ melon.price }}</td>
-                <td>{{ melon.cost_of_mel }}</td>
-            </tr>   
+                <td> ${{ "{:.2f}".format(melon.price) }}</td>
+                <td> ${{ "{:.2f}".format(melon.cost_of_mel) }}</td>
+                <td><a href="/delete_item/{{ melon.melon_id }}" class="del_btn btn-sm btn-primary">remove</a></td>
+                </tr>
             {% endfor %}
         </tr>
         </tbody>
     </table>
 
-    <h3>Total: ${{ total_cost }}</h3>
-
+    <h3>Total: ${{ "{:.2f}".format(total_cost) }}</h3>
+    <!-- <h3>Total: ${{ total_cost }}</h3> -->
     <a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
-
 {% endblock %}
